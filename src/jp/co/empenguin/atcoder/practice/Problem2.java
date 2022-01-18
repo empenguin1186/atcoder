@@ -1,8 +1,8 @@
-package jp.co.empenguin.atcoder.work20220117;
+package jp.co.empenguin.atcoder.practice;
 
 import java.util.Scanner;
 
-public class ProblemB {
+public class Problem2 {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         int n = scan.nextInt();
