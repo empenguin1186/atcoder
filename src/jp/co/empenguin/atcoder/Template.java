@@ -1,4 +1,4 @@
-package jp.co.empenguin.atcoder.practice;
+package jp.co.empenguin.atcoder;
 
 import java.util.Scanner;
 
