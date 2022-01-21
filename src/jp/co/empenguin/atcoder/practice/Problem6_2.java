@@ -57,9 +57,8 @@ public class Problem6_2 {
                 for (int j = 0; j < diff; j++) {
                     result[i][j] = "0";
                 }
-                for (int j = diff; j < keta + 1; j++) {
-                    result[i][j] = str.split("")[j-diff];
-                }
+                if (keta + 1 - diff >= 0)
+                    System.arraycopy(str.split(""), 0, result[i], diff, keta + 1 - diff);
             }
         }
         return result;
