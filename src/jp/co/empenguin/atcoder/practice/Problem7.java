@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * TODO
+ * TODO 全探索
  */
 public class Problem7 {
     public static void main(String[] args) {
