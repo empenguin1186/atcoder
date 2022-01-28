@@ -114,4 +114,13 @@ public class Utils {
 
         return false;
     }
+
+    /**
+     * 階乗を出力する関数
+     * @param n n! の n の部分
+     * @return 階乗
+     */
+    public static long factorial(int n) {
+        return n == 1 ? 1 : n * factorial(n-1);
+    }
 }
