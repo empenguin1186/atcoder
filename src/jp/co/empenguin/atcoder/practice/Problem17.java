@@ -58,6 +58,7 @@ public class Problem17 {
                 break;
             }
             do {
+                // 候補となる座標のリストを作成する
                 List<Point> points = new ArrayList<>();
                 for (int i = 0; i < K; i++) {
                     points.add(new Point(queens[i][0], queens[i][1]));
@@ -65,6 +66,8 @@ public class Problem17 {
                 for (int i = 0; i < 8 - K; i++) {
                     points.add(new Point(rows[i], cols[i]));
                 }
+
+                // 各座標は同じ列、または同じ行に位置しないように選んでいるので、任意に選んだ2つの座標が斜めに位置するかの判定だけ行えば良い
                 List<List<Point>> pair = make(points, 2);
                 boolean is8Queen = true;
                 for (List<Point> pointList : pair) {
@@ -75,6 +78,8 @@ public class Problem17 {
                         break;
                     }
                 }
+
+                // 候補が見つかった場合、各座標を記録
                 if (is8Queen) {
                     for (Point point : points) {
                         map[point.x][point.y] = true;
