@@ -27,21 +27,21 @@ public class ProblemC {
 //
 //        }
 
-        while (index < length && !(index == tail - index - 1)) {
-            char c1 = chars[index];
-            char c2 = chars[tail - index - 1];
-            if (c1 == c2) {
-                isHead = false;
-                index++;
-            } else {
-                if (c2 == 'a' && isHead) {
-                    tail--;
-                } else {
-                    isYes = false;
-                    break;
-                }
-            }
-        }
+//        while (index < length && !(index == tail - index - 1)) {
+//            char c1 = chars[index];
+//            char c2 = chars[tail - index - 1];
+//            if (c1 == c2) {
+//                isHead = false;
+//                index++;
+//            } else {
+//                if (c2 == 'a' && isHead) {
+//                    tail--;
+//                } else {
+//                    isYes = false;
+//                    break;
+//                }
+//            }
+//        }
 
         String result = isYes ? "Yes" : "No";
         System.out.println(result);
