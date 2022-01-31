@@ -35,8 +35,7 @@ public class ProblemC {
                 for (int i = 0; i < n - y - x; i++) {
                     isYes &= chars[x+i] == chars[n-y-1-i];
                 }
-                String result = isYes ? "Yes" : "No";
-                System.out.println(result);
+                System.out.println(isYes ? "Yes" : "No");
             }
         }
         scan.close();
