@@ -32,3 +32,8 @@ https://atcoder.jp/contests/arc133
   - https://qiita.com/ageprocpp/items/f6661deaa09dda124132
   - https://qiita.com/_rdtr/items/c49aa20f8d48fbea8bd2
   - https://qiita.com/ganyariya/items/33f1326154b85db465c3
+
+## 20220130
+
+### D
+- 両端キュー + 発想の逆転. 普通に考えると要素を挿入する位置を特定するのは難しいが、逆順で挿入していくことを考えると必ず挿入位置は左右どちらかの端となるのでこちらで考えた方が簡単。
