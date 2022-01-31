@@ -7,44 +7,38 @@ public class ProblemC {
         Scanner scan = new Scanner(System.in);
         String S = scan.next();
         char[] chars = S.toCharArray();
-        boolean isYes = true;
-        int length = chars.length;
-        boolean isHead = true;
-//        int tail = length;
-//
-//        while (tail > 0 && chars[tail-1] == 'a') {
-//            tail--;
-//        }
-//        int numOfTailA = length - tail;
-//        int head = 0;
-//        while (head < length && chars[head] == 'a') {
-//            head++;
-//        }
-//        int numOfHeadA = head;
-//        int start = 0;
-//        int end = length;
-//        if (numOfHeadA < numOfTailA) {
-//
-//        }
+        int n = chars.length;
 
-//        while (index < length && !(index == tail - index - 1)) {
-//            char c1 = chars[index];
-//            char c2 = chars[tail - index - 1];
-//            if (c1 == c2) {
-//                isHead = false;
-//                index++;
-//            } else {
-//                if (c2 == 'a' && isHead) {
-//                    tail--;
-//                } else {
-//                    isYes = false;
-//                    break;
-//                }
-//            }
-//        }
+        int x = 0;
+        for (int i = 0; i < n; i++) {
+            if (chars[i] != 'a') {
+                break;
+            }
+            x++;
+        }
 
-        String result = isYes ? "Yes" : "No";
-        System.out.println(result);
+        int y = 0;
+        for (int i = n-1; i >=0; i--) {
+            if (chars[i] != 'a') {
+                break;
+            }
+            y++;
+        }
+
+        if (x > y) {
+            System.out.println("No");
+        } else {
+            if (x + y >= n) {
+                System.out.println("Yes");
+            } else {
+                boolean isYes = true;
+                for (int i = 0; i < n - y - x; i++) {
+                    isYes &= chars[x+i] == chars[n-y-1-i];
+                }
+                String result = isYes ? "Yes" : "No";
+                System.out.println(result);
+            }
+        }
         scan.close();
     }
 }
