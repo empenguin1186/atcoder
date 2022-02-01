@@ -123,4 +123,27 @@ public class Utils {
     public static long factorial(int n) {
         return n == 1 ? 1 : n * factorial(n-1);
     }
+
+
+    /**
+     * 一次元の座標群 array と点 point が与えられた場合の最短距離を求める関数
+     * 例) array = [1, 3, 5, 8], point = 6 が与えられた場合、戻り値は1となる(|6-5|=1).
+     *
+     * @param left 探索対象の配列の左端のインデックス
+     * @param right 探索対象の配列の右端のインデックス
+     * @param array 探索対象の座標を格納した配列. あらかじめ昇順にソートされてある必要がある
+     * @param point 最短距離を特定したい座標(1次元)
+     * @return 最短距離
+     */
+    public static int findMinimumDistance(int left, int right, int[] array, int point) {
+        if (right - left < 2) {
+            return Math.min(Math.abs(point-array[right]), Math.abs(point-array[left]));
+        }
+        int index = (left + right) / 2;
+        if (array[index] < point) {
+            return findMinimumDistance(index, right, array, point);
+        } else {
+            return findMinimumDistance(left, index, array, point);
+        }
+    }
 }
