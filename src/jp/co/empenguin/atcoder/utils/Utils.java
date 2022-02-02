@@ -146,4 +146,12 @@ public class Utils {
             return findMinimumDistance(left, index, array, point);
         }
     }
+
+    public static int lowerBound(Integer[] array, int value) {
+        return ~Arrays.binarySearch(array, value, (x, y) -> x.compareTo(y) >= 0 ? 1 : -1);
+    }
+
+    public static int upperBound(Integer[] array, int value) {
+        return ~Arrays.binarySearch(array, value, (x, y) -> x.compareTo(y) > 0 ? 1 : -1);
+    }
 }
