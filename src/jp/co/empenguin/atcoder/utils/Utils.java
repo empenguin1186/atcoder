@@ -3,6 +3,7 @@ package jp.co.empenguin.atcoder.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
 
 public class Utils {
@@ -147,11 +148,46 @@ public class Utils {
         }
     }
 
+    /**
+     * lower_bound 関数. 昇順ソートされた配列 array に対して、value の値よりも小さい値が最後に出現した位置を返す関数
+     * @param array 昇順ソートされた配列
+     * @param value 判定する値
+     * @return value の値よりも大きい値が最初に出現した位置
+     */
     public static int lowerBound(Integer[] array, int value) {
         return ~Arrays.binarySearch(array, value, (x, y) -> x.compareTo(y) >= 0 ? 1 : -1);
     }
 
+    /**
+     * upper_bound 関数. 昇順ソートされた配列 array に対して、value の値よりも大きい値が最初に出現した位置を返す関数
+     * @param array 昇順ソートされた配列
+     * @param value 判定する値
+     * @return value の値よりも大きい値が最初に出現した位置
+     */
     public static int upperBound(Integer[] array, int value) {
         return ~Arrays.binarySearch(array, value, (x, y) -> x.compareTo(y) > 0 ? 1 : -1);
+    }
+
+    /**
+     * 三分探索を行う関数
+     * @param low 探索を行う範囲を [low, high] とした場合の low の値. 左端の座標.
+     * @param high 探索を行う範囲を [low, high] とした場合の high の値. 右端の座標.
+     * @param operator 最小値を求める関数 f(x). 最小値を一つだけもつ. 下に凸である必要あり.
+     * @return 最小値をとる際の x 座標
+     */
+    public static double ternarySearch(double low, double high, DoubleUnaryOperator operator) {
+        // 500 は適当
+        for (int i = 0; i < 500; i++) {
+            double left = (2 * low + 1 * high) / 3;
+            double right = (1 * low + 2 * high) / 3;
+            double leftVal = operator.applyAsDouble(left);
+            double rightVal = operator.applyAsDouble(right);
+            if (leftVal < rightVal) {
+                high = right;
+            } else {
+                low = left;
+            }
+        }
+        return low;
     }
 }
