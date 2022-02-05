@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
+/**
+ * TODO MLE 発生
+ */
 public class Problem23 {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
