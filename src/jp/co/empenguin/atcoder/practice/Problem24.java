@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Problem24 {
     public static void main(String[] args) {
@@ -23,8 +24,24 @@ public class Problem24 {
         }
 
         boolean[] seen = new boolean[N];
+
+        List<Integer> starts = G.keySet().stream().filter(e -> {
+            boolean isContain = true;
+            for (List<Integer> value : G.values()) {
+                isContain &= !value.contains(e);
+            }
+            return isContain;
+        }).collect(Collectors.toList());
         DfsTimeStamp order = new DfsTimeStamp(N);
-        dfsTimeStamp(G, 0, seen, order);
+
+        if (starts.isEmpty()) {
+            List<Integer> temp = new ArrayList<>();
+            temp.add(0);
+            starts = temp;
+        }
+        for (Integer start : starts) {
+            dfsTimeStamp(G, start, seen, order);
+        }
 
         for (int i = 0; i < N; i++) {
             System.out.printf("%d %d %d%n", i+1, order.getFirstOrder()[i]+1, order.getLastOrder()[i]+1);

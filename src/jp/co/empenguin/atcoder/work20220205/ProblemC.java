@@ -19,7 +19,7 @@ public class ProblemC {
             result = result.add(temp);
         }
         long start = (long) Math.pow(10, n);
-        BigDecimal x = new BigDecimal(N - start  + 1);
+        BigDecimal x = new BigDecimal(N - start + 1);
         BigDecimal y = new BigDecimal(N - start + 2);
         BigDecimal z = x.multiply(y).divide(new BigDecimal(2));
         System.out.println(result.add(z).remainder(new BigDecimal(998244353)).toString());
