@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
-import jp.co.empenguin.atcoder.practice.Problem24;
 
 public class Utils {
 
@@ -243,8 +242,8 @@ public class Utils {
             Map<Integer, List<Integer>> graph,
             Integer start,
             boolean[] seen,
-            Problem24.DfsOrderState firstOrder,
-            Problem24.DfsOrderState lastOrder
+            DfsOrderState firstOrder,
+            DfsOrderState lastOrder
     ) {
 
         // 行きがけ順を記録 & インクリメント
@@ -305,7 +304,7 @@ public class Utils {
             Map<Integer, List<Integer>> graph,
             Integer start,
             boolean[] seen,
-            Problem24.DfsTimeStamp order
+            DfsTimeStamp order
     ) {
         // 行きがけ順を記録 & インクリメント
         order.setFirstOrder(start);
