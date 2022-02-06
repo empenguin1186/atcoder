@@ -3,6 +3,7 @@ package jp.co.empenguin.atcoder.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
 
@@ -189,5 +190,25 @@ public class Utils {
             }
         }
         return low;
+    }
+
+    /**
+     * 深さ優先探索を行う関数
+     * @param graph 探索を行うグラフ
+     * @param start 探索の開始地点
+     * @param seen 開始地点から各地点へ到達できるかどうかを格納する配列
+     */
+    public static void depthFirstSearch(Map<Integer, List<Integer>> graph, Integer start, boolean[] seen) {
+        seen[start] = true;
+        List<Integer> vertexes = graph.get(start);
+
+        if (vertexes == null) {
+            return;
+        }
+
+        for (Integer vertex : vertexes) {
+            if (seen[vertex]) continue;
+            depthFirstSearch(graph, vertex, seen);
+        }
     }
 }
