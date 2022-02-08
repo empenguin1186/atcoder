@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * TODO 間違いあり
+ */
 public class Problem26 {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
