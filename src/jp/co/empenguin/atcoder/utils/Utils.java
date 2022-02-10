@@ -1,9 +1,11 @@
 package jp.co.empenguin.atcoder.utils;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
 
@@ -322,5 +324,39 @@ public class Utils {
 
         // 帰りがけ順を記録 & インクリメント
         order.setLastOrder(start);
+    }
+
+    /**
+     * 幅優先探索を行い始点からの距離を計算する関数
+     * @param graph 探索対象のグラフ
+     * @param n 頂点数
+     * @param start 開始位置(0始まり)
+     * @return 始点からの距離を格納した配列
+     */
+    public static int[] bfs(Map<Integer, List<Integer>> graph, int n, int start) {
+        int[] dist = new int[n];
+        Arrays.fill(dist, -1);
+        Queue<Integer> queue = new ArrayDeque<>();
+
+        dist[start] = 0;
+        queue.add(start);
+
+        while (!queue.isEmpty()) {
+            int v = queue.poll();
+
+            List<Integer> toList = graph.get(v);
+            if (toList == null) {
+                continue;
+            }
+            for (Integer to : toList) {
+                if (dist[to] != -1) {
+                    continue;
+                }
+                dist[to] = dist[v] + 1;
+                queue.add(to);
+            }
+        }
+
+        return dist;
     }
 }
