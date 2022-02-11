@@ -359,4 +359,21 @@ public class Utils {
 
         return dist;
     }
+
+    /**
+     * 二次元配列を任意の値で初期化する関数
+     * @param row 行の長さ
+     * @param col 列の長さ
+     * @param val 初期値
+     * @return 初期化された配列
+     */
+    public static int[][] initIntegerArray(int row, int col, int val) {
+        int[][] array = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            int[] cols = new int[col];
+            Arrays.fill(cols, val);
+            array[i] = cols;
+        }
+        return array;
+    }
 }
