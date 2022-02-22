@@ -3,6 +3,9 @@ package jp.co.empenguin.atcoder.practice;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * TODO 不正解
+ */
 public class Problem49 {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
