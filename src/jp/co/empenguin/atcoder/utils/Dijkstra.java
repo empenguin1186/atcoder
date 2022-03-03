@@ -69,7 +69,11 @@ public class Dijkstra {
         }
 
         public int findMin() {
-            return this.vertexMap.entrySet().stream().filter(e -> e.getValue().isNotSeen()).min(Comparator.comparingInt(e -> e.getValue().distance)).get().getValue().getDistance();
+            return this.vertexMap.entrySet().stream()
+                    .filter(e -> e.getValue().isNotSeen())
+                    .min(Comparator.comparingInt(e -> e.getValue().distance))
+                    .map(integerVertexEntry -> integerVertexEntry.getValue().getDistance())
+                    .orElse(-1);
         }
 
         public Vertex get(Integer index) {
@@ -94,7 +98,7 @@ public class Dijkstra {
             }
         }
 
-        public List<Integer> findByVertex(Vertex vertex) {
+        public List<Integer> findDestination(Vertex vertex) {
             return this.graph.get(vertex);
         }
     }
@@ -147,11 +151,54 @@ public class Dijkstra {
         }
     }
 
+    public static class DijkstraSolve {
+        final EdgeMap edgeMap;
+        final VertexMap vertexMap;
+        final Graph graph;
+
+        public DijkstraSolve(EdgeMap edgeMap, VertexMap vertexMap, Graph graph) {
+            this.edgeMap = edgeMap;
+            this.vertexMap = vertexMap;
+            this.graph = graph;
+        }
+
+        public int solve(int src, int dst) {
+            Vertex current = this.vertexMap.get(src);
+            current.updateDistance(0);
+            current.seen();
+
+            while (true) {
+                List<Integer> destinations = graph.findDestination(current);
+                for (Integer destination : destinations) {
+                    Vertex vertex = vertexMap.get(destination);
+                    if (vertex.isNotSeen()) {
+                        int distance = edgeMap.getDistance(current.getVertexIndex(), destination);
+                        vertex.updateDistance(current.getDistance() + distance);
+                    }
+                }
+
+                int min = vertexMap.findMin();
+                if (min == -1) {
+                    break;
+                }
+
+                // 経路が存在しない
+                if (min == Integer.MAX_VALUE) {
+                    return -1;
+                }
+
+                current = vertexMap.get(min);
+                current.seen();
+            }
+
+            return vertexMap.get(dst).getDistance();
+        }
+    }
+
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         int V = scan.nextInt();
         int E = scan.nextInt();
-        int[][] map = initIntegerArray(V, V, -1);
 
         final EdgeMap edgeMap = new EdgeMap();
         final Graph graph = new Graph();
@@ -169,28 +216,12 @@ public class Dijkstra {
 
         int src = scan.nextInt();
         int dst = scan.nextInt();
-        int[] distances = new int[V];
 
-        Vertex current = vertexMap.get(src);
-        current.updateDistance(0);
-        current.seen();
-        while(true) {
-            List<Integer> connected = graph.findByVertex(current);
-            for (Integer to : connected) {
-                Vertex vertex = vertexMap.get(to);
-                Integer distance = edgeMap.getDistance(current.getVertexIndex(), to);
-                vertex.updateDistance(current.getDistance() + distance);
-            }
-            Integer min = vertexMap.findMin();
-            current = vertexMap.get(min);
-            current.seen();
-        }
+        DijkstraSolve solve = new DijkstraSolve(edgeMap, vertexMap, graph);
+        int result = solve.solve(src, dst);
+        System.out.println(result);
 
         scan.close();
-    }
-
-    public static void dijkstra(int[][] map, int src, int[] distances) {
-
     }
 
     public static int[][] initIntegerArray(int row, int col, int val) {
