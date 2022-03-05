@@ -1,30 +1,31 @@
 package jp.co.empenguin.atcoder.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Vector;
 
+/**
+ * TODO TLE 発生
+ */
 public class Dijkstra {
-    public static class Vertex {
+    public static class Vertex implements Comparable<Object> {
         private final int vertexIndex;
         private int distance;
-        private boolean seen;
-
-        public void updateDistance(int distance) {
-            if (distance < this.distance) {
-                this.distance = distance;
-            }
-        }
+        private final Vector<Edge> edges;
 
         public Vertex(int vertexIndex) {
             this.vertexIndex = vertexIndex;
             this.distance = Integer.MAX_VALUE;
-            this.seen = false;
+            this.edges = new Vector<>();
+        }
+
+        public void updateDistance(int distance) {
+            if (distance >= 0) {
+                this.distance = Math.min(this.distance, distance);
+            }
         }
 
         public int getVertexIndex() {
@@ -35,12 +36,12 @@ public class Dijkstra {
             return this.distance;
         }
 
-        public boolean isNotSeen() {
-            return !this.seen;
+        public Vector<Edge> getEdges() {
+            return edges;
         }
 
-        public void seen() {
-            this.seen = true;
+        public void addEdge(Edge edge) {
+            this.edges.add(edge);
         }
 
         @Override
@@ -55,69 +56,36 @@ public class Dijkstra {
         public int hashCode() {
             return Objects.hash(vertexIndex);
         }
-    }
 
-    public static class VertexMap {
-        private final Map<Integer, Vertex> vertexMap;
-
-        public VertexMap() {
-            this.vertexMap = new HashMap<>();
-        }
-
-        public void addVertex(Vertex vertex) {
-            this.vertexMap.put(vertex.vertexIndex, vertex);
-        }
-
-        public int findMin() {
-            return this.vertexMap.entrySet().stream()
-                    .filter(e -> e.getValue().isNotSeen())
-                    .min(Comparator.comparingInt(e -> e.getValue().distance))
-                    .map(integerVertexEntry -> integerVertexEntry.getValue().getDistance())
-                    .orElse(-1);
-        }
-
-        public Vertex get(Integer index) {
-            return this.vertexMap.get(index);
-        }
-    }
-
-    public static class Graph {
-        private final Map<Vertex, List<Integer>> graph;
-
-        public Graph() {
-            this.graph = new HashMap<>();
-        }
-
-        public void addVertex(Vertex vertex, Integer to) {
-            if (this.graph.containsKey(vertex)) {
-                this.graph.get(vertex).add(to);
-            } else {
-                List<Integer> list = new ArrayList<>();
-                list.add(to);
-                this.graph.put(vertex, list);
-            }
-        }
-
-        public List<Integer> findDestination(Vertex vertex) {
-            return this.graph.get(vertex);
+        @Override
+        public int compareTo(Object o) {
+            if (! (o instanceof Vertex)) throw new IllegalArgumentException("Vertex needed");
+            Vertex x = (Vertex) o;
+            return Integer.compare(this.distance, x.distance);
         }
     }
 
     public static class Edge {
-        private final int from;
-        private final int to;
+        private final Vertex from;
+        private final Vertex to;
+        private final int distance;
 
-        public Edge(int from, int to) {
+        public Edge(Vertex from, Vertex to, int distance) {
             this.from = from;
             this.to = to;
+            this.distance = distance;
         }
 
-        public int getFrom() {
+        public Vertex getFrom() {
             return from;
         }
 
-        public int getTo() {
+        public Vertex getTo() {
             return to;
+        }
+
+        public int getDistance() {
+            return distance;
         }
 
         @Override
@@ -125,112 +93,85 @@ public class Dijkstra {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Edge edge = (Edge) o;
-            return from == edge.from && to == edge.to;
+            return distance == edge.distance && Objects.equals(from, edge.from) && Objects.equals(to, edge.to);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(from, to);
-        }
-    }
-
-    public static class EdgeMap {
-        private final Map<Edge, Integer> edgeMap;
-
-        public EdgeMap() {
-            this.edgeMap = new HashMap<>();
-        }
-
-        public void addEdge(int from, int to, int distance) {
-            this.edgeMap.put(new Edge(from, to), distance);
-            this.edgeMap.put(new Edge(to, from), distance);
-        }
-
-        public Integer getDistance(int from, int to) {
-            return this.edgeMap.get(new Edge(from, to));
+            return Objects.hash(from, to, distance);
         }
     }
 
     public static class DijkstraSolve {
-        final EdgeMap edgeMap;
-        final VertexMap vertexMap;
-        final Graph graph;
+        private final Map<Integer, Vertex> vertexMap;
 
-        public DijkstraSolve(EdgeMap edgeMap, VertexMap vertexMap, Graph graph) {
-            this.edgeMap = edgeMap;
-            this.vertexMap = vertexMap;
-            this.graph = graph;
+        public DijkstraSolve(int vertexes) {
+            this.vertexMap = new HashMap<>();
+            for (int i = 0; i < vertexes; i++) {
+                vertexMap.put(i, new Vertex(i));
+            }
         }
 
-        public int solve(int src, int dst) {
-            Vertex current = this.vertexMap.get(src);
-            current.updateDistance(0);
-            current.seen();
+        public void addEdge(int from, int to, int distance) {
+            Vertex fromV = this.vertexMap.get(from);
+            Vertex toV = this.vertexMap.get(to);
+            Edge edge = new Edge(fromV, toV, distance);
+            fromV.addEdge(edge);
+        }
 
-            while (true) {
-                List<Integer> destinations = graph.findDestination(current);
-                for (Integer destination : destinations) {
-                    Vertex vertex = vertexMap.get(destination);
-                    if (vertex.isNotSeen()) {
-                        int distance = edgeMap.getDistance(current.getVertexIndex(), destination);
-                        vertex.updateDistance(current.getDistance() + distance);
+        public int[] getDistanceWithEachVertex(int src) {
+            PriorityQueue<Vertex> queue = new PriorityQueue<>();
+            queue.addAll(vertexMap.values());
+
+            Vertex current = vertexMap.get(src);
+            queue.remove(current);
+            current.updateDistance(0);
+            queue.offer(current);
+            int[] distances = new int[this.vertexMap.values().size()];
+
+            while (!queue.isEmpty()) {
+                Vertex vertex = queue.poll();
+                distances[vertex.getVertexIndex()] = vertex.getDistance();
+
+                for (Edge edge : vertex.getEdges()) {
+                    Vertex to = edge.getTo();
+                    if (queue.remove(to)) {
+                        to.updateDistance(vertex.getDistance() + edge.getDistance());
+                        queue.offer(to);
                     }
                 }
-
-                int min = vertexMap.findMin();
-                if (min == -1) {
-                    break;
-                }
-
-                // 経路が存在しない
-                if (min == Integer.MAX_VALUE) {
-                    return -1;
-                }
-
-                current = vertexMap.get(min);
-                current.seen();
             }
 
-            return vertexMap.get(dst).getDistance();
+            return distances;
         }
     }
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
+
         int V = scan.nextInt();
         int E = scan.nextInt();
+        int r = scan.nextInt();
 
-        final EdgeMap edgeMap = new EdgeMap();
-        final Graph graph = new Graph();
-        final VertexMap vertexMap = new VertexMap();
+        DijkstraSolve solve = new DijkstraSolve(V);
         for (int i = 0; i < E; i++) {
             int from = scan.nextInt();
             int to = scan.nextInt();
             int distance = scan.nextInt();
 
-            Vertex vertex = new Vertex(from);
-            edgeMap.addEdge(from, to, distance);
-            graph.addVertex(vertex, to);
-            vertexMap.addVertex(vertex);
+            solve.addEdge(from, to, distance);
         }
 
-        int src = scan.nextInt();
-        int dst = scan.nextInt();
+        int[] distances = solve.getDistanceWithEachVertex(r);
 
-        DijkstraSolve solve = new DijkstraSolve(edgeMap, vertexMap, graph);
-        int result = solve.solve(src, dst);
-        System.out.println(result);
+        for (int distance : distances) {
+            if (distance == Integer.MAX_VALUE) {
+                System.out.println("INF");
+            } else {
+                System.out.println(distance);
+            }
+        }
 
         scan.close();
-    }
-
-    public static int[][] initIntegerArray(int row, int col, int val) {
-        int[][] array = new int[row][col];
-        for (int i = 0; i < row; i++) {
-            int[] cols = new int[col];
-            Arrays.fill(cols, val);
-            array[i] = cols;
-        }
-        return array;
     }
 }
