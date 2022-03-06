@@ -22,10 +22,21 @@ public class Dijkstra {
             this.edges = new Vector<>();
         }
 
+        /**
+         * 距離を更新する.
+         * @param distance 更新しようとする距離の値
+         */
         public void updateDistance(int distance) {
             if (distance >= 0) {
                 this.distance = Math.min(this.distance, distance);
             }
+        }
+
+        /**
+         * 距離を初期化する.
+         */
+        public void initDistance() {
+            this.distance = Integer.MAX_VALUE;
         }
 
         public int getVertexIndex() {
@@ -40,6 +51,10 @@ public class Dijkstra {
             return edges;
         }
 
+        /**
+         * 連結している Edge を追加する
+         * @param edge 連結している Edge
+         */
         public void addEdge(Edge edge) {
             this.edges.add(edge);
         }
@@ -103,13 +118,18 @@ public class Dijkstra {
     }
 
     public static class DijkstraSolve {
+        /** 各頂点を格納したMap */
         private final Map<Integer, Vertex> vertexMap;
+
+        /** 最短距離をもつ頂点を探すために使用する優先度キュー */
+        private final PriorityQueue<Vertex> queue;
 
         public DijkstraSolve(int vertexes) {
             this.vertexMap = new HashMap<>();
             for (int i = 0; i < vertexes; i++) {
                 vertexMap.put(i, new Vertex(i));
             }
+            this.queue = new PriorityQueue<>();
         }
 
         public void addEdge(int from, int to, int distance) {
@@ -119,30 +139,77 @@ public class Dijkstra {
             fromV.addEdge(edge);
         }
 
+        /**
+         * 各頂点の最短距離の初期化.
+         */
+        public void initVertexDistance() {
+            for (Vertex vertex : vertexMap.values()) {
+                vertex.initDistance();
+            }
+        }
+
+        /**
+         * 各頂点における始点srcからの最短距離を算出するメソッド.
+         * @param src 始点
+         * @return 各頂点への最短距離を格納した配列
+         */
         public int[] getDistanceWithEachVertex(int src) {
-            PriorityQueue<Vertex> queue = new PriorityQueue<>();
-            queue.addAll(vertexMap.values());
+            this.queue.clear();
+            this.queue.addAll(vertexMap.values());
 
             Vertex current = vertexMap.get(src);
-            queue.remove(current);
+            this.queue.remove(current);
             current.updateDistance(0);
-            queue.offer(current);
+            this.queue.offer(current);
             int[] distances = new int[this.vertexMap.values().size()];
 
-            while (!queue.isEmpty()) {
-                Vertex vertex = queue.poll();
+            while (!this.queue.isEmpty()) {
+                Vertex vertex = this.queue.poll();
                 distances[vertex.getVertexIndex()] = vertex.getDistance();
 
                 for (Edge edge : vertex.getEdges()) {
                     Vertex to = edge.getTo();
-                    if (queue.remove(to)) {
+                    if (this.queue.remove(to)) {
                         to.updateDistance(vertex.getDistance() + edge.getDistance());
-                        queue.offer(to);
+                        this.queue.offer(to);
                     }
                 }
             }
 
             return distances;
+        }
+
+        /**
+         * src - dst間の最短距離を求めるメソッド. 到達できない場合は Integer.MAX_VALUE が返却される
+         * @param src 始点
+         * @param dst 終点
+         * @return 最短距離
+         */
+        public int getMinimumDistance(int src, int dst) {
+            this.queue.clear();
+            this.queue.addAll(vertexMap.values());
+
+            Vertex current = vertexMap.get(src);
+            this.queue.remove(current);
+            current.updateDistance(0);
+            this.queue.offer(current);
+
+            while (!this.queue.isEmpty()) {
+                Vertex vertex = this.queue.poll();
+                if (vertex.getVertexIndex() == dst) {
+                    return vertex.getDistance();
+                }
+
+                for (Edge edge : vertex.getEdges()) {
+                    Vertex to = edge.getTo();
+                    if (this.queue.remove(to)) {
+                        to.updateDistance(vertex.getDistance() + edge.getDistance());
+                        this.queue.offer(to);
+                    }
+                }
+            }
+
+            return Integer.MAX_VALUE;
         }
     }
 
