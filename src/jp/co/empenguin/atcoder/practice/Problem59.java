@@ -1,6 +1,7 @@
 package jp.co.empenguin.atcoder.practice;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.PriorityQueue;
@@ -83,7 +84,7 @@ public class Problem59 {
     public static class Edge {
         private final Vertex from;
         private final Vertex to;
-        private final int distance;
+        private int distance;
 
         public Edge(Vertex from, Vertex to, int distance) {
             this.from = from;
@@ -99,6 +100,12 @@ public class Problem59 {
             return to;
         }
 
+        public void updateDistance(int distance) {
+            if (distance > 0) {
+                this.distance = Math.min(this.distance, distance);
+            }
+        }
+
         public int getDistance() {
             return distance;
         }
@@ -108,12 +115,12 @@ public class Problem59 {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Edge edge = (Edge) o;
-            return distance == edge.distance && Objects.equals(from, edge.from) && Objects.equals(to, edge.to);
+            return Objects.equals(from, edge.from) && Objects.equals(to, edge.to);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(from, to, distance);
+            return Objects.hash(from, to);
         }
     }
 
@@ -124,7 +131,7 @@ public class Problem59 {
         /** 最短距離をもつ頂点を探すために使用する優先度キュー */
         private final PriorityQueue<Vertex> queue;
 
-        public DijkstraSolve(int vertexes, int[] C, int[] R) {
+        public DijkstraSolve(int vertexes) {
             this.vertexMap = new HashMap<>();
             for (int i = 0; i < vertexes; i++) {
                 vertexMap.put(i, new Vertex(i));
@@ -139,12 +146,20 @@ public class Problem59 {
             fromV.addEdge(edge);
         }
 
-        /**
-         * 各頂点の最短距離の初期化.
-         */
-        public void initVertexDistance() {
-            for (Vertex vertex : vertexMap.values()) {
-                vertex.initDistance();
+        public void updateAllEdge(int[] C, int[] R) {
+            for (int i = 0; i < this.vertexMap.size(); i++) {
+                updateEdge(this.vertexMap.get(i), C[i], R[i]);
+            }
+        }
+
+        private void updateEdge(Vertex vertex, int c, int r) {
+            if (r > 0) {
+                Vector<Edge> edges = vertex.getEdges();
+                for (Edge edge : edges) {
+                    edge.updateDistance(c);
+                    Vertex to = edge.getTo();
+                    updateEdge(to, c, r-1);
+                }
             }
         }
 
@@ -226,13 +241,16 @@ public class Problem59 {
             R[i] = scan.nextInt();
         }
 
-        DijkstraSolve solve = new DijkstraSolve(N, C, R);
+        DijkstraSolve solve = new DijkstraSolve(N);
         for (int i = 0; i < K; i++) {
             int from = scan.nextInt() - 1;
             int to = scan.nextInt() - 1;
-            solve.addEdge(from, to, 0);
-            solve.addEdge(to, from, 0);
+            solve.addEdge(from, to, Integer.MAX_VALUE);
+            solve.addEdge(to, from, Integer.MAX_VALUE);
         }
+        solve.updateAllEdge(C, R);
+
+        System.out.println(solve.getMinimumDistance(0, N - 1));
 
         scan.close();
     }
