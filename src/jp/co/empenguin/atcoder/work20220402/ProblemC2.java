@@ -10,32 +10,24 @@ public class ProblemC2 {
         int K = scan.nextInt();
         int X = scan.nextInt();
         int[] A = new int[N];
+        int sum = 0;
+        int applicableCoupons = 0;
+        int[] discounted = new int[N];
         for (int i = 0; i < N; i++) {
             A[i] = scan.nextInt();
+            sum += A[i];
+            applicableCoupons += A[i] / X;
+            discounted[i] = A[i] % X;
         }
 
-        int[] B = new int[N];
-        boolean flag = true;
-        for (int i = 0; i < N; i++) {
-            int coupons = A[i] / X;
-            if (flag) {
-                if (K - coupons < 0) {
-                    B[i] = A[i] - X * K;
-                    K = 0;
-                    flag = false;
-                } else {
-                    B[i] = A[i] - X * coupons;
-                    K = K - coupons;
-                }
-            } else {
-                B[i] = A[i];
-            }
-        }
-
-        Arrays.sort(B);
         int result = 0;
-        for (int i = 0; i < N - K; i++) {
-            result += B[i];
+        if (applicableCoupons >= K) {
+            result = sum - K * X;
+        } else {
+            int to = K - applicableCoupons;
+            Arrays.sort(discounted);
+            int[] array = Arrays.copyOfRange(discounted, 0, Math.max(0, N - to));
+            result = Arrays.stream(array).sum();
         }
 
         System.out.println(result);
