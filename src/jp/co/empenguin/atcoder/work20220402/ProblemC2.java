@@ -20,14 +20,17 @@ public class ProblemC2 {
             discounted[i] = A[i] % X;
         }
 
-        int result = 0;
-        if (applicableCoupons >= K) {
-            result = sum - K * X;
-        } else {
-            int to = K - applicableCoupons;
-            Arrays.sort(discounted);
-            int[] array = Arrays.copyOfRange(discounted, 0, Math.max(0, N - to));
-            result = Arrays.stream(array).sum();
+        int m = Math.min(K, applicableCoupons);
+        int result = sum - m * X;
+        int remains = K - m;
+        Arrays.sort(discounted);
+
+        for (int i = N-1; i >= 0; i--) {
+            if (remains == 0) {
+                break;
+            }
+            result -= discounted[i];
+            remains--;
         }
 
         System.out.println(result);
