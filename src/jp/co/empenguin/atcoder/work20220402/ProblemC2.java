@@ -10,8 +10,8 @@ public class ProblemC2 {
         int K = scan.nextInt();
         int X = scan.nextInt();
         int[] A = new int[N];
-        int sum = 0;
-        int applicableCoupons = 0;
+        long sum = 0;
+        long applicableCoupons = 0;
         int[] discounted = new int[N];
         for (int i = 0; i < N; i++) {
             A[i] = scan.nextInt();
@@ -20,9 +20,9 @@ public class ProblemC2 {
             discounted[i] = A[i] % X;
         }
 
-        int m = Math.min(K, applicableCoupons);
-        int result = sum - m * X;
-        int remains = K - m;
+        long m = Math.min(K, applicableCoupons);
+        long result = sum - m * X;
+        long remains = K - m;
         Arrays.sort(discounted);
 
         for (int i = N-1; i >= 0; i--) {
